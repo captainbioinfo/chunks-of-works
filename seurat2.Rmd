@@ -1,15 +1,9 @@
 #Starting
-
-```{r}
 library(Seurat)
 library(tidyverse) 
 
 getwd() 
-```
-
-#Read count DISEASED
-
-```{r}
+#Load and Read count DISEASED
 PDAC_I<-Read10X(data.dir = "C:/Users/Farha Tarique/Documents/GitHub/minor_project/pdac/SRR21491966/filtered_feature_bc_matrix")
 PDAC_II<-Read10X(data.dir = "C:/Users/Farha Tarique/Documents/GitHub/minor_project/pdac/SRR21491967/filtered_feature_bc_matrix")
 PDAC_III<-Read10X(data.dir = "C:/Users/Farha Tarique/Documents/GitHub/minor_project/pdac/SRR21491972/filtered_feature_bc_matrix")
@@ -21,11 +15,6 @@ PDAC_VIII<-Read10X(data.dir = "C:/Users/Farha Tarique/Documents/GitHub/minor_pro
 PDAC_IX<-Read10X(data.dir = "C:/Users/Farha Tarique/Documents/GitHub/minor_project/pdac/SRR21491986/filtered_feature_bc_matrix")
 PDAC_X<-Read10X(data.dir = "C:/Users/Farha Tarique/Documents/GitHub/minor_project/pdac/SRR21491987/filtered_feature_bc_matrix")
 #
-```
-
-#Read count NORMAL
-
-```{r}
 NOR_I<-Read10X(data.dir = "C:/Users/Farha Tarique/Documents/GitHub/minor_project/adac/SRR21491988/outs/filtered_feature_bc_matrix")
 NOR_II<-Read10X(data.dir = "C:/Users/Farha Tarique/Documents/GitHub/minor_project/adac/SRR21492001/outs/filtered_feature_bc_matrix")
 NOR_III<-Read10X(data.dir = "C:/Users/Farha Tarique/Documents/GitHub/minor_project/adac/SRR21492003/outs/filtered_feature_bc_matrix")
@@ -36,13 +25,11 @@ NOR_VII<-Read10X(data.dir = "C:/Users/Farha Tarique/Documents/GitHub/minor_proje
 NOR_VIII<-Read10X(data.dir = "C:/Users/Farha Tarique/Documents/GitHub/minor_project/adac/SRR21492008/outs/filtered_feature_bc_matrix")
 NOR_IX<-Read10X(data.dir = "C:/Users/Farha Tarique/Documents/GitHub/minor_project/adac/SRR21492014/outs/filtered_feature_bc_matrix")
 NOR_X<-Read10X(data.dir = "C:/Users/Farha Tarique/Documents/GitHub/minor_project/adac/SRR21492015/outs/filtered_feature_bc_matrix")
-```
 
 #library for creating Seurat object
 
 # creating seurat object
 
-```{r}
 PDAC_I<-CreateSeuratObject(counts = PDAC_I,project = "PDAC", min.cells = 3, min.features = 200)
 PDAC_I
 PDAC_II<-CreateSeuratObject(counts = PDAC_II,project = "PDAC", min.cells = 3, min.features = 200)
@@ -64,11 +51,8 @@ PDAC_IX
 PDAC_X<-CreateSeuratObject(counts = PDAC_X,project = "PDAC", min.cells = 3, min.features = 200)
 PDAC_X
 
-```
-
 # CREATE SEURAT OBJECT NORMAL
 
-```{r}
 NOR_I<-CreateSeuratObject(counts = NOR_I,project = "NOR", min.cells = 3, min.features = 200)
 NOR_I
 NOR_II<-CreateSeuratObject(counts = NOR_II,project = "NOR", min.cells = 3, min.features = 200)
@@ -89,11 +73,10 @@ NOR_IX<-CreateSeuratObject(counts = NOR_IX,project = "NOR", min.cells = 3, min.f
 NOR_IX
 NOR_X<-CreateSeuratObject(counts = NOR_X,project = "NOR", min.cells = 3, min.features = 200)
 NOR_X
-```
+
 
 # to check AND view seurat objects
 
-```{r}
 class(PDAC_I)
 
 colnames(PDAC_I[])
@@ -101,11 +84,10 @@ rownames(PDAC_I[])
 #View(PDAC_I)
 #PDAC_I#
 View(PDAC_I@meta.data)
-```
+
 
 # Save Seurat object
 
-```{r RDS}
 saveRDS(PDAC_I,file = "C:/Users/Farha Tarique/Documents/GitHub/minor_project/pdac/PDAC_I.RDS")
 saveRDS(PDAC_II,file = "C:/Users/Farha Tarique/Documents/GitHub/minor_project/pdac/PDAC_II.RDS")
 saveRDS(PDAC_III,file = "C:/Users/Farha Tarique/Documents/GitHub/minor_project/pdac/PDAC_III.RDS")
@@ -130,7 +112,7 @@ saveRDS(NOR_X,file ="C:/Users/Farha Tarique/Documents/GitHub/minor_project/adac/
 ```
 
 # QUALITY CONTROL
-```{r}
+
 # Loading PDAC datasets
 PDAC_I <- readRDS("C:/Users/Farha Tarique/Documents/GitHub/minor_project/pdac/PDAC_I.RDS")
 PDAC_II <- readRDS("C:/Users/Farha Tarique/Documents/GitHub/minor_project/pdac/PDAC_II.RDS")
@@ -143,12 +125,10 @@ PDAC_VIII <- readRDS("C:/Users/Farha Tarique/Documents/GitHub/minor_project/pdac
 PDAC_IX <- readRDS("C:/Users/Farha Tarique/Documents/GitHub/minor_project/pdac/PDAC_IX.RDS")
 PDAC_X <- readRDS("C:/Users/Farha Tarique/Documents/GitHub/minor_project/pdac/PDAC_X.RDS")
 
-```
 
 
 # calculate mitochondrial gene %
 
-```{r}
 # FOR DISEASED CONDITION SAMPLES
 PDAC_I<- PercentageFeatureSet(PDAC_I, pattern = "^MT-",col.name = "percent.mt")
 PDAC_II<- PercentageFeatureSet(PDAC_II, pattern = "^MT-",col.name = "percent.mt")
@@ -446,10 +426,6 @@ VlnPlot(NOR_X, features = c("percent.mt","nCount_RNA","nFeature_RNA"),ncol = 3)
 PDAC_I
 View(PDAC_II$meta.data)
 
-```
-
-
-```{r}
 #PDAC_I
 # Load data and estimate soup profile
 #all <-c('PDAC_I','PDAC_II','PDAC_III','PDAC_IV','PDAC_V','PDAC_VI','PDAC_VII','PDAC_VIII','PDAC_IX','PDAC_X','NOR_I','NOR_II','NOR_III','NOR_IV','NOR_V','NOR_VI','NOR_VII','NOR_VIII','NOR_IX','NOR_X')
@@ -465,12 +441,7 @@ head(PDAC_I@meta.data)
 # Access assays in your Seurat object
 available_assays <- assays(PDAC_I)
 print(available_assays)  # This should show you the assays present in the object
-```
-
-## 
-
-```{r}
-
+###
 ALL.list <- list(
   PDAC_I = PDAC_I,
   PDAC_II = PDAC_II,
@@ -501,12 +472,10 @@ ALL.list <- readRDS("ALL_list_seurat_objects.rds")
 
 ALL.list <- DimPlot(ALL.list, reduction = "umap", label = TRUE)
 #rm()
-```
 
 # NORMALIZATION OK CODE
 
 
-```{r}
 library(Seurat)
 library(dplyr)
 #
