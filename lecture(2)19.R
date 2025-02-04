@@ -37,8 +37,6 @@ print(j)
 class(j)
 colnames(j)##to get the column name of the matrix
 
-
-
 ###to print the specific value of the column or row
 jt<-matrix(1:10,nrow=3,ncol=3,byrow=F)
 print(jt[3, 2])# 3 is the row no. and 2 is the col no. 
@@ -55,11 +53,4 @@ print(matmulti)
 matmul<-jl %%jt ##((lesslikely too be used)) for element element wise multiplication
 print(matmul)
 ## 
-
-
-
-
-
-
-
 
