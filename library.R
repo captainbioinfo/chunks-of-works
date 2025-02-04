@@ -1,0 +1,6 @@
+if(!require("BiocManager",quietly = TRUE))
+  install.packages("BiocManager")
+BiocManager::install("DESeq?")
+install.packages("DEseq?")
+install.packages("vsn")
+library(vsn)
