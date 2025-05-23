@@ -10,7 +10,7 @@ library(magrittr)
 rm(list=ls())
 enableWGCNAThreads()
 
-data <- readr::read_delim("for_wgcna_project_29.txt",  delim = "\t")    # <= path to the data file
+data <- readr::read_delim("for_wgcna_project.txt",  delim = "\t")    # <= path to the data file
 # ########To remove gene_id2 column #######################
  
 sampleinfo <- read.table("sampleinfo.txt", header=T,sep="\t")    # <= path to the data file
