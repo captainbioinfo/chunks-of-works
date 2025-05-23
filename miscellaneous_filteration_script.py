@@ -2,12 +2,12 @@ import pandas as pd
 import os
 
 # FOR REMOVING THE GENE-GENE AND LNC-LNC INTERACTIONS
-#directory = r'C:\Users\Sandeep Kushwaha\Desktop\Major_project_data\Major_project_data\New folder'
+#directory = r'...\New folder'
 #if not os.path.exists(directory):
   #  os.makedirs(directory)
 
 # Load the TSV file into a DataFrame
-df = pd.read_csv(r'C:\Users\Sandeep Kushwaha\Desktop\pca_latest\project29\wgcna\New folder\CytoscapeInput5-edges-blue.txt', sep='\t', header=None)
+df = pd.read_csv(r'...CytoscapeInput5-edges-blue.txt', sep='\t', header=None)
 # Check if both column 1 and column 2 start with "TCON" and filter those rows out
 df = df[~((df[0].str.contains('TCON')) & (df[1].str.contains('TCON')))]
 df = df[~((df[0].str.contains('MSTRG')) & (df[1].str.contains('MSTRG')))]
@@ -33,5 +33,5 @@ print("Number of rows before filtering:", df.shape[0])
 
 
 # Save the modified DataFrame back to a new TSV file
-df.to_csv(r'C:\Users\Sandeep Kushwaha\Desktop\pca_latest\project29\wgcna\New folder\blue_interaction_file.csv', sep='\t', index=False, header=True)
+df.to_csv(r'......\blue_interaction_file.csv', sep='\t', index=False, header=True)
 print("DONE")
