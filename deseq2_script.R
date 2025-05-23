@@ -4,7 +4,7 @@ library(tidyverse)
 library(EnhancedVolcano)
 ######### Load count data and sample metadata #########################
 counts_data <- read.csv("gene_count_matrix.csv")
-col_data <- read.csv("pro_29_sampleinfo.csv")
+col_data <- read.csv("sampleinfo.csv")
 
 # Store gene IDs before removing them from counts data
 gene_ids <- counts_data$gene_id
