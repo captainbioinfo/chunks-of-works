@@ -1,0 +1,199 @@
+---
+title: "Bulk_rna-seq"
+output: html_document
+date: "`r Sys.Date()`"
+---
+
+```{r}
+#Loading required packages----
+#install.packages("R.utils")
+library(R.utils)
+
+#BiocManager::install("Rsubread")
+library(Rsubread)
+#install.packages("data.table")
+library(data.table)
+#BiocManager::install("RUVSeq")
+library(RUVSeq)
+# BiocManager::install("DESeq2")
+
+#(if the above installation of RUVseq didn't work, try this)
+#source("http://bioconductor.org/biocLite.R")
+#biocLite("RUVSeq")
+
+library(DESeq2)
+
+# BiocManager::install('EnhancedVolcano')
+library(EnhancedVolcano)
+
+#install.packages("pheatmap")
+library(pheatmap)
+
+install.packages("RColorBrewer")
+library(RColorBrewer)
+
+#install.packages("ggplot2")
+library(ggplot2)
+
+ 
+BiocManager::install("Rqc")
+library(Rqc)
+
+```
+
+
+```{r}
+#Downloading FastQ files----
+url<-"ftp.sra.ebi.ac.uk/vol1/fastq/SRR592/006/SRR5924196/SRR5924196_1.fastq.gz"
+destination<-"SRR5924196_1.fastq.gz"
+download.file(url,destination)
+
+url<-"ftp.sra.ebi.ac.uk/vol1/fastq/SRR592/006/SRR5924196/SRR5924196_2.fastq.gz"
+destination<-"SRR5924196_2.fastq.gz"
+download.file(url,destination)
+
+url<-"ftp.sra.ebi.ac.uk/vol1/fastq/SRR592/008/SRR5924198/SRR5924198_1.fastq.gz"
+destination<-"SRR5924198_1.fastq.gz"
+download.file(url,destination)
+
+url<-"ftp.sra.ebi.ac.uk/vol1/fastq/SRR592/008/SRR5924198/SRR5924198_2.fastq.gz"
+destination<-"SRR5924198_2.fastq.gz"
+download.file(url,destination)
+```
+
+
+
+```{r}
+library(R.utils)
+
+#Downloading Genome file----
+url<-"ftp://ftp.ensembl.org/pub/release-96/fasta/saccharomyces_cerevisiae/dna/Saccharomyces_cerevisiae.R64-1-1.dna_sm.toplevel.fa.gz"
+destination<-"Saccharomyces_cerevisiae.R64-1-1.dna_sm.toplevel.fa.gz"
+download.file(url,destination)
+gunzip(destination)
+
+#Downloading GTF file----
+url<-"ftp://ftp.ensembl.org/pub/release-96/gtf/saccharomyces_cerevisiae/Saccharomyces_cerevisiae.R64-1-1.96.gtf.gz"
+destination<-"Saccharomyces_cerevisiae.R64-1-1.96.gtf.gz"
+download.file(url,destination)
+gunzip(destination)
+```
+
+
+```{r}
+## this will run only in linux and mac
+library(fastqcr)
+
+# Input FASTQ folder (your raw FASTQ.gz files)
+fq_dir <- "C:/Users/Farha Tarique/Desktop/Workshop Material - Genome Informatics - 6th/raw"
+
+# Output QC results folder
+qc_dir <- "C:/Users/Farha Tarique/Desktop/Workshop Material - Genome Informatics - 6th/fastqc_results"
+
+# Run FastQC (make sure fastqc.exe or run_fastqc.bat is in PATH)
+fastqc(
+  fq.dir = fq_dir, 
+  qc.dir = qc_dir, 
+  threads = 4
+)
+
+qc <- qc_aggregate(qc_dir)
+qc
+
+```
+
+
+
+```{r}
+#install.packages("fastqcr")
+library(R.utils)
+
+#Your system should also have JAVA installed.
+#visit www.java.com for installation
+library(fastqcr)
+fastqc_install()
+fastqc()
+qc <- qc_aggregate("FASTQC/")
+qc
+
+```
+
+
+
+
+
+```{r}
+#BiocManager::install("Rsubread")
+library(Rsubread)
+
+#Building Index----
+buildindex("Sc_full_index_rsubread",
+           "Saccharomyces_cerevisiae.R64-1-1.dna_sm.toplevel.fa",
+           indexSplit=F)
+
+reads1 <- list.files(pattern = "_1.fastq.gz$" )
+reads2 <- list.files(pattern = "_2.fastq.gz$" )
+all.equal(length(reads1),length(reads2))
+```
+## foe single ends reads
+reads1 <- c("raw/SRR5924196.fastq.gz", "raw/SRR5924198.fastq.gz")
+out_bams <- c("SRR5924196.bam", "SRR5924198.bam")
+
+align(
+  index = "Sc_full_index_rsubread",
+  readfile1 = reads1,
+  input_format = "gzFASTQ",
+  output_file = out_bams,
+  output_format = "BAM",
+  nthreads = 10
+)
+
+
+
+```{r}
+align(
+  index = "Sc_full_index_rsubread",
+  readfile1 = c("raw/SRR5924196_1.fastq.gz", "raw/SRR5924198_1.fastq.gz"),
+  readfile2 = c("raw/SRR5924196_2.fastq.gz", "raw/SRR5924198_2.fastq.gz"),
+  input_format = "gzFASTQ",
+  output_file = c("SRR5924196.bam", "SRR5924198.bam"),
+  output_format = "BAM",
+  nthreads = 10
+)
+
+```
+
+
+```{r}
+#Checking the BAM files generated----
+bam.files <- list.files(pattern = ".BAM$", full.names = TRUE)
+bam.files
+
+```
+```{r}
+# 2. Collect BAM files
+bam.files <- list.files(pattern = "\\.bam$", full.names = TRUE)
+bam.files
+
+# 3. Check mapping proportions
+library(Rsubread)
+props <- propmapped(files = bam.files)
+props
+
+# 4. Count features
+fcLim <- featureCounts(
+  files = bam.files,
+  annot.ext = "Saccharomyces_cerevisiae.R64-1-1.96.gtf",
+  GTF.featureType = "exon",
+  GTF.attrType = "gene_id",
+  isGTFAnnotationFile = TRUE,
+  isPairedEnd = TRUE
+)
+
+# 5. Convert to dataframe
+fc <- data.frame(fcLim$counts)
+colnames(fc) <- c("SRR5924196", "SRR5924198")
+
+head(fc)
+```
+
