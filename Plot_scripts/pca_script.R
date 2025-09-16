@@ -110,3 +110,4 @@ ggsave("pca_plot_for_ppt.png", plot = pca_plot, width = 10, height = 8, units = 
 ggsave("pca_plot_for_pdf22.png", plot = pca_plot, width = 5400, height = 5400, units = "px", dpi = 600, bg = "white")
 ################
 
+
